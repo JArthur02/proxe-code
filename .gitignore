@@ -1,0 +1,4 @@
+decompiled/*.bc
+decompiled/*.dsm
+decompiled/*.ll
+decompiled/*.config.json
