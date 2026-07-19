@@ -1,6 +1,13 @@
-/* Extracted from Proxifier.exe (Ghidra). Proxy chain logic subset. */
+/* Proxifier v4.14 proxy-chain logic — Ghidra 11.3.1 decompile, annotated subset. */
+/* See 00_OVERVIEW.md and MAPPING.md in this directory. */
 
-// ----- FUN_1400b36c0 @ 1400b36c0 -----
+// ===== CConnection::RouteViaProxyOrChain =====
+// Ghidra: FUN_1400b36c0 @ 0x1400b36c0
+// Main connect dispatcher: single proxy, simple chain, redundancy, or load-balance.
+// uproxe: ChainManager.ConnectAsync + ChainDialer.ConnectAsync
+// note: param_1[1]+0xbc action: 2=proxy id, 3=chain id. Chain type at +0x30: 0=simple, 1=redundancy, 2=load_balancing.
+// ------------------------------------------------------------
+
 
 void FUN_1400b36c0(longlong *param_1,undefined8 *param_2,undefined8 param_3)
 
@@ -813,7 +820,12 @@ LAB_1400b47aa:
 
 
 
-// ----- FUN_1400276f0 @ 1400276f0 -----
+// ===== CProxyConnection::EstablishSocket =====
+// Ghidra: FUN_1400276f0 @ 0x1400276f0
+// Low-level TCP connect + handshake bootstrap for a proxy connection context.
+// uproxe: ChainDialer.ConnectTcpAsync + per-hop HandshakeAsync
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x0001400281e5) */
 /* WARNING: Removing unreachable block (ram,0x000140027ee5) */
@@ -1687,7 +1699,12 @@ code_r0x000140028563:
 
 
 
-// ----- FUN_14002cd70 @ 14002cd70 -----
+// ===== CProxyConnection::FormatEndpointLabel =====
+// Ghidra: FUN_14002cd70 @ 0x14002cd70
+// Build human-readable proxy endpoint string for logs/errors.
+// uproxe: ChainDialer.FormatEndpoint / ChainDialException message
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x00014002d241) */
 
@@ -1996,7 +2013,12 @@ LAB_14002d3d1:
 
 
 
-// ----- FUN_140095d90 @ 140095d90 -----
+// ===== CProfileEditor::OnRemoveProxyFromChain =====
+// Ghidra: FUN_140095d90 @ 0x140095d90
+// UI handler: remove proxy from chain list, renumber rule references.
+// uproxe: ChainControlForm (partial)
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x000140095f47) */
 
@@ -2364,7 +2386,13 @@ LAB_140096562:
 
 
 
-// ----- FUN_1400b7140 @ 1400b7140 -----
+// ===== CChain::SpawnRedundancyRecheckWorker =====
+// Ghidra: FUN_1400b7140 @ 0x1400b7140
+// std::thread worker: re-probe a failed redundancy-chain proxy in background.
+// uproxe: ChainManager.TryHalfOpenProbesAsync / RunVerificationAsync
+// note: Launches tuple<CChain,int,vector<CProxy>> async recheck when RedundancyRecheck enabled.
+// ------------------------------------------------------------
+
 
 void FUN_1400b7140(undefined8 param_1,undefined8 param_2,undefined8 param_3,undefined4 *param_4,
                   undefined8 param_5)

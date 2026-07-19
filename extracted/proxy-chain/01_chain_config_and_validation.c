@@ -1,6 +1,13 @@
-/* Extracted from Proxifier.exe (Ghidra). Proxy chain logic subset. */
+/* Proxifier v4.14 proxy-chain logic — Ghidra 11.3.1 decompile, annotated subset. */
+/* See 00_OVERVIEW.md and MAPPING.md in this directory. */
 
-// ----- FUN_14006e2c0 @ 14006e2c0 -----
+// ===== CProfile::LoadProxyAndChainLists =====
+// Ghidra: FUN_14006e2c0 @ 0x14006e2c0
+// Parse Profile.ppx XML: ProxyList entries, then ChainList/Chain nodes.
+// uproxe: ChainProfileStore.Load / profile import
+// note: Reads Chain/Name, Type, proxy id refs, RedundancyTimeout, RedundancyTryDirect, RedundancyRecheck, RedundancyRecheckTime, LoadBalancingSameProxyForPid.
+// ------------------------------------------------------------
+
 
 /* WARNING: Function: _alloca_probe replaced with injection: alloca_probe */
 /* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
@@ -1815,7 +1822,13 @@ LAB_1400710a8:
 
 
 
-// ----- FUN_140071370 @ 140071370 -----
+// ===== CProfile::SaveProxyAndChainLists =====
+// Ghidra: FUN_140071370 @ 0x140071370
+// Serialize ProxyList + ChainList back to XML.
+// uproxe: ChainProfileStore.Save
+// note: Mirror of load path; emits same chain attributes.
+// ------------------------------------------------------------
+
 
 /* WARNING: Function: _alloca_probe replaced with injection: alloca_probe */
 /* WARNING: Removing unreachable block (ram,0x0001400725ac) */
@@ -3399,7 +3412,13 @@ LAB_140073f1f:
 
 
 
-// ----- FUN_140068a50 @ 140068a50 -----
+// ===== CProfile::ValidateHttpProxyLastInChain =====
+// Ghidra: FUN_140068a50 @ 0x140068a50
+// Reject chains where an HTTP proxy is not the final hop.
+// uproxe: ChainDialer.ConnectAsync (runtime) — gap filled in uproxe mapping PR
+// note: Error: `"<name>": HTTP proxy server must be the last one in the chain.`
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x000140068edb) */
 
@@ -3707,7 +3726,12 @@ LAB_140068e53:
 
 
 
-// ----- FUN_14009dde0 @ 14009dde0 -----
+// ===== CRuleAction::ParseType =====
+// Ghidra: FUN_14009dde0 @ 0x14009dde0
+// Map rule action string → enum: Block=0, Direct=1, Proxy=2, Chain=3.
+// uproxe: N/A (uproxe has no WFP rule engine)
+// ------------------------------------------------------------
+
 
 undefined8 FUN_14009dde0(undefined8 *param_1,undefined4 *param_2)
 
@@ -3780,7 +3804,12 @@ LAB_14009def5:
 
 
 
-// ----- FUN_14009df00 @ 14009df00 -----
+// ===== CRuleAction::FormatType =====
+// Ghidra: FUN_14009df00 @ 0x14009df00
+// Format rule action enum back to display/XML string.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x00014009dfa9) */
 

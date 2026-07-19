@@ -35,11 +35,13 @@ Rule match → select chain ID
 
 | File | Contents |
 |------|----------|
-| `01_chain_config_and_validation.c` | XML `Chain`/`ChainList` parse + validation (~FUN_14006e2c0) |
+| `00_OVERVIEW.md` | Data model, runtime flow, validation rules |
+| `MAPPING.md` | Proxifier ↔ uproxe implementation map + gap analysis |
+| `01_chain_config_and_validation.c` | XML `Chain`/`ChainList` parse + validation |
 | `02_chain_runtime_and_redundancy.c` | Connect / failover / redundancy runtime |
 | `03_chain_ui_dialogs.c` | `CChainTypeDlg`, `CChainRedundancyDlg`, chain removal UI |
 | `04_proxy_objects_and_dialogs.c` | `CProxy` object + proxy editor dialogs |
-| `INDEX.md` | Function → file map |
+| `INDEX.md` | Annotated function index |
 
 ## Regenerate
 

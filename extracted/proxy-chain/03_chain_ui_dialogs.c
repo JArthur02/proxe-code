@@ -1,6 +1,12 @@
-/* Extracted from Proxifier.exe (Ghidra). Proxy chain logic subset. */
+/* Proxifier v4.14 proxy-chain logic — Ghidra 11.3.1 decompile, annotated subset. */
+/* See 00_OVERVIEW.md and MAPPING.md in this directory. */
 
-// ----- FUN_140020560 @ 140020560 -----
+// ===== CChainRedundancyDlg::GetRuntimeClass =====
+// Ghidra: FUN_140020560 @ 0x140020560
+// MFC RTTI.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 undefined ** FUN_140020560(void)
 
@@ -11,7 +17,12 @@ undefined ** FUN_140020560(void)
 
 
 
-// ----- FUN_1400205c0 @ 1400205c0 -----
+// ===== CChainRedundancyDlg::CChainRedundancyDlg =====
+// Ghidra: FUN_1400205c0 @ 0x1400205c0
+// Redundancy options dialog ctor.
+// uproxe: ChainControlForm redundancy settings
+// ------------------------------------------------------------
+
 
 void FUN_1400205c0(CDialog *param_1)
 
@@ -47,7 +58,12 @@ void FUN_1400205c0(CDialog *param_1)
 
 
 
-// ----- FUN_1400209a0 @ 1400209a0 -----
+// ===== CChainTypeDlg::GetRuntimeClass =====
+// Ghidra: FUN_1400209a0 @ 0x1400209a0
+// MFC RTTI.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 undefined ** FUN_1400209a0(void)
 
@@ -58,7 +74,12 @@ undefined ** FUN_1400209a0(void)
 
 
 
-// ----- FUN_1400209b0 @ 1400209b0 -----
+// ===== CChainTypeDlg::CChainTypeDlg =====
+// Ghidra: FUN_1400209b0 @ 0x1400209b0
+// Chain type picker: simple / redundancy / load balancing.
+// uproxe: ChainControlForm mode selector
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x000140020a56) */
 /* WARNING: Removing unreachable block (ram,0x000140020abf) */
@@ -118,7 +139,12 @@ CDialog * FUN_1400209b0(CDialog *param_1,undefined8 param_2,undefined8 param_3,u
 
 
 
-// ----- FUN_140020b70 @ 140020b70 -----
+// ===== CChainTypeDlg::OnInitDialog =====
+// Ghidra: FUN_140020b70 @ 0x140020b70
+// Initialize chain type dialog controls.
+// uproxe: ChainControlForm
+// ------------------------------------------------------------
+
 
 CDialog * FUN_140020b70(CDialog *param_1,ulonglong param_2)
 
@@ -139,7 +165,12 @@ CDialog * FUN_140020b70(CDialog *param_1,ulonglong param_2)
 
 
 
-// ----- FUN_140020be0 @ 140020be0 -----
+// ===== CChainTypeDlg::OnOK =====
+// Ghidra: FUN_140020be0 @ 0x140020be0
+// Persist selected chain type from dialog.
+// uproxe: ChainControlForm
+// ------------------------------------------------------------
+
 
 void FUN_140020be0(CDialog *param_1)
 
@@ -153,7 +184,12 @@ void FUN_140020be0(CDialog *param_1)
 
 
 
-// ----- FUN_140098270 @ 140098270 -----
+// ===== CChainEditorDlg::ValidateBeforeSave =====
+// Ghidra: FUN_140098270 @ 0x140098270
+// UI validation including HTTP-last-in-chain message.
+// uproxe: Client-side validation before Save
+// ------------------------------------------------------------
+
 
 void FUN_140098270(longlong param_1)
 
@@ -234,7 +270,12 @@ void FUN_140098270(longlong param_1)
 
 
 
-// ----- FUN_14009a040 @ 14009a040 -----
+// ===== CChainEditorDlg::OnAddProxy =====
+// Ghidra: FUN_14009a040 @ 0x14009a040
+// Add proxy reference to chain in editor UI.
+// uproxe: ChainControlForm hop list
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x00014009a258) */
 
@@ -405,7 +446,12 @@ LAB_14009a149:
 
 
 
-// ----- FUN_14009b800 @ 14009b800 -----
+// ===== CChainEditorDlg::OnRemoveChain =====
+// Ghidra: FUN_14009b800 @ 0x14009b800
+// Remove chain from profile + fix rule references.
+// uproxe: ChainProfileStore.Delete
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x00014009b8f5) */
 /* WARNING: Removing unreachable block (ram,0x00014009bb34) */

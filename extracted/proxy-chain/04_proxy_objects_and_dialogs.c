@@ -1,6 +1,12 @@
-/* Extracted from Proxifier.exe (Ghidra). Proxy chain logic subset. */
+/* Proxifier v4.14 proxy-chain logic — Ghidra 11.3.1 decompile, annotated subset. */
+/* See 00_OVERVIEW.md and MAPPING.md in this directory. */
 
-// ----- FUN_14001bc10 @ 14001bc10 -----
+// ===== CProxy::CProxy(copy) =====
+// Ghidra: FUN_14001bc10 @ 0x14001bc10
+// Copy-construct CProxy from another instance.
+// uproxe: ProxyHop record copy
+// ------------------------------------------------------------
+
 
 undefined8 * FUN_14001bc10(undefined8 *param_1,longlong param_2)
 
@@ -33,7 +39,12 @@ undefined8 * FUN_14001bc10(undefined8 *param_1,longlong param_2)
 
 
 
-// ----- FUN_14008b310 @ 14008b310 -----
+// ===== CProxy::LoadFromXmlNode =====
+// Ghidra: FUN_14008b310 @ 0x14008b310
+// Populate CProxy from XML (host, port, type, auth, options).
+// uproxe: ChainProfileStore hop DTO → ProxyHop.FromParsed
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x00014008b3e9) */
 
@@ -122,7 +133,12 @@ LAB_14008b4de:
 
 
 
-// ----- FUN_14008b4f0 @ 14008b4f0 -----
+// ===== CProxy::Release =====
+// Ghidra: FUN_14008b4f0 @ 0x14008b4f0
+// Destructor / cleanup for CProxy strings and sub-objects.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 void FUN_14008b4f0(undefined8 *param_1)
 
@@ -193,7 +209,206 @@ void FUN_14008b4f0(undefined8 *param_1)
 
 
 
-// ----- FUN_14008bf30 @ 14008bf30 -----
+// ===== CChain::ParseTypeString =====
+// Ghidra: FUN_14008bac0 @ 0x14008bac0
+// Parse chain Type attribute: "simple"=0, "redundancy"=1, "load_balancing"=2.
+// uproxe: ChainMode enum (FastFailover≈1, StrictMultiHop≈0; load_balancing missing)
+// ------------------------------------------------------------
+
+
+undefined8 FUN_14008bac0(longlong *param_1,undefined4 *param_2)
+
+{
+  int *piVar1;
+  int iVar2;
+  short sVar3;
+  short sVar4;
+  short *psVar5;
+  longlong lVar6;
+  code *pcVar7;
+  short *psVar8;
+  undefined8 uVar9;
+  
+  if (PTR_u_simple_1403fc660 != (undefined *)0x0) {
+    psVar5 = (short *)*param_1;
+    psVar8 = psVar5;
+    do {
+      sVar3 = *psVar8;
+      sVar4 = *(short *)((longlong)psVar8 + ((longlong)PTR_u_simple_1403fc660 - (longlong)psVar5));
+      if (sVar3 != sVar4) break;
+      psVar8 = psVar8 + 1;
+    } while (sVar4 != 0);
+    if (sVar3 == sVar4) {
+      *param_2 = 0;
+      goto LAB_14008bb7f;
+    }
+    if (PTR_u_redundancy_1403fc668 == (undefined *)0x0) goto LAB_14008bbe0;
+    psVar8 = psVar5;
+    do {
+      sVar3 = *psVar8;
+      sVar4 = *(short *)((longlong)psVar8 +
+                        ((longlong)PTR_u_redundancy_1403fc668 - (longlong)psVar5));
+      if (sVar3 != sVar4) break;
+      psVar8 = psVar8 + 1;
+    } while (sVar4 != 0);
+    if (sVar3 == sVar4) {
+      *param_2 = 1;
+LAB_14008bb7f:
+      lVar6 = *param_1;
+      LOCK();
+      piVar1 = (int *)(lVar6 + -8);
+      iVar2 = *piVar1;
+      *piVar1 = *piVar1 + -1;
+      UNLOCK();
+      if (iVar2 < 2) {
+        (**(code **)(**(longlong **)(lVar6 + -0x18) + 8))();
+      }
+      return 1;
+    }
+    if (PTR_u_load_balancing_1403fc670 != (undefined *)0x0) {
+      psVar8 = psVar5;
+      do {
+        sVar3 = *psVar8;
+        sVar4 = *(short *)((longlong)psVar8 +
+                          ((longlong)PTR_u_load_balancing_1403fc670 - (longlong)psVar5));
+        if (sVar3 != sVar4) break;
+        psVar8 = psVar8 + 1;
+      } while (sVar4 != 0);
+      if (sVar3 != sVar4) {
+        LOCK();
+        piVar1 = (int *)(psVar5 + -4);
+        iVar2 = *piVar1;
+        *piVar1 = *piVar1 + -1;
+        UNLOCK();
+        if (iVar2 < 2) {
+          (**(code **)(**(longlong **)(psVar5 + -0xc) + 8))();
+        }
+        return 0;
+      }
+      *param_2 = 2;
+      goto LAB_14008bb7f;
+    }
+    FUN_14000cd00(0x80004005);
+  }
+  FUN_14000cd00(0x80004005);
+LAB_14008bbe0:
+  FUN_14000cd00(0x80004005);
+  pcVar7 = (code *)swi(3);
+  uVar9 = (*pcVar7)();
+  return uVar9;
+}
+
+
+
+
+// ===== CChainList::FindById =====
+// Ghidra: FUN_14008bbf0 @ 0x14008bbf0
+// Linear search chain vector by numeric id.
+// uproxe: Profile lookup by chain id — uproxe uses Guid/name instead
+// ------------------------------------------------------------
+
+
+ulonglong FUN_14008bbf0(longlong *param_1,int param_2)
+
+{
+  longlong lVar1;
+  int *piVar2;
+  longlong lVar3;
+  ulonglong uVar4;
+  
+  lVar3 = param_1[1] - *param_1;
+  uVar4 = 0;
+  lVar1 = lVar3 >> 0x3f;
+  lVar3 = lVar3 / 0x38 + lVar1;
+  if (lVar3 != lVar1) {
+    piVar2 = (int *)(*param_1 + 0x34);
+    do {
+      if (*piVar2 == param_2) {
+        return uVar4 & 0xffffffff;
+      }
+      uVar4 = uVar4 + 1;
+      piVar2 = piVar2 + 0xe;
+    } while (uVar4 < (ulonglong)(lVar3 - lVar1));
+  }
+  return 0xffffffff;
+}
+
+
+
+
+// ===== CChain::CloneProxyVector =====
+// Ghidra: FUN_14008bc40 @ 0x14008bc40
+// Deep-copy vector<CProxy> for a chain instance.
+// uproxe: profile.Hops.ToList()
+// ------------------------------------------------------------
+
+
+undefined8 * FUN_14008bc40(longlong param_1,undefined8 *param_2,longlong *param_3)
+
+{
+  longlong *plVar1;
+  longlong lVar2;
+  int *piVar3;
+  ulonglong uVar4;
+  longlong lVar5;
+  ulonglong uVar6;
+  longlong lVar7;
+  longlong local_res8;
+  undefined8 *local_res10;
+  
+  *param_2 = 0;
+  param_2[1] = 0;
+  param_2[2] = 0;
+  lVar7 = *(longlong *)(param_1 + 0x18);
+  uVar6 = 0;
+  local_res10 = param_2;
+  if (*(longlong *)(param_1 + 0x20) - lVar7 >> 3 != 0) {
+    do {
+      if ((*(char *)(lVar7 + 4 + uVar6 * 8) != '\0') &&
+         ((*(int *)(param_1 + 0x30) != 1 || (*(char *)(lVar7 + 5 + uVar6 * 8) != '\x01')))) {
+        local_res8 = *param_3;
+        lVar2 = param_3[1] - local_res8 >> 0x3f;
+        lVar5 = (param_3[1] - local_res8) / 0x98 + lVar2;
+        if (lVar5 != lVar2) {
+          piVar3 = (int *)(local_res8 + 0x40);
+          uVar4 = 0;
+          do {
+            if (*piVar3 == *(int *)(lVar7 + uVar6 * 8)) goto LAB_14008bd08;
+            uVar4 = uVar4 + 1;
+            piVar3 = piVar3 + 0x26;
+          } while (uVar4 < (ulonglong)(lVar5 - lVar2));
+        }
+        uVar4 = 0xffffffff;
+LAB_14008bd08:
+        local_res8 = (longlong)(int)uVar4 * 0x98 + local_res8;
+        plVar1 = (longlong *)param_2[1];
+        if ((longlong *)param_2[2] == plVar1) {
+          FUN_14008bd80(param_2,plVar1,&local_res8);
+        }
+        else {
+          *plVar1 = local_res8;
+          param_2[1] = param_2[1] + 8;
+        }
+        if (*(int *)(param_1 + 0x30) == 1) {
+          return param_2;
+        }
+      }
+      uVar6 = uVar6 + 1;
+      lVar7 = *(longlong *)(param_1 + 0x18);
+    } while (uVar6 < (ulonglong)(*(longlong *)(param_1 + 0x20) - lVar7 >> 3));
+  }
+  return param_2;
+}
+
+
+
+
+// ===== CProxyEditorDlg::GetRuntimeClass =====
+// Ghidra: FUN_14008bf30 @ 0x14008bf30
+// MFC RTTI.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 undefined ** FUN_14008bf30(void)
 
@@ -204,7 +419,12 @@ undefined ** FUN_14008bf30(void)
 
 
 
-// ----- FUN_14008bf40 @ 14008bf40 -----
+// ===== CProxyEditorDlg::CProxyEditorDlg =====
+// Ghidra: FUN_14008bf40 @ 0x14008bf40
+// Proxy editor dialog ctor.
+// uproxe: Settings / proxy edit UI
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x00014008bfae) */
 
@@ -243,7 +463,12 @@ CDialog * FUN_14008bf40(CDialog *param_1,undefined8 param_2,undefined8 param_3,u
 
 
 
-// ----- FUN_14008c010 @ 14008c010 -----
+// ===== CProxyEditorDlg::OnInitDialog =====
+// Ghidra: FUN_14008c010 @ 0x14008c010
+// Initialize proxy editor fields.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 CDialog * FUN_14008c010(CDialog *param_1,uint param_2,undefined8 param_3,undefined8 param_4)
 
@@ -278,7 +503,12 @@ CDialog * FUN_14008c010(CDialog *param_1,uint param_2,undefined8 param_3,undefin
 
 
 
-// ----- FUN_14008c0a0 @ 14008c0a0 -----
+// ===== CProxyEditorDlg::OnDestroy =====
+// Ghidra: FUN_14008c0a0 @ 0x14008c0a0
+// Cleanup proxy editor dialog.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 void FUN_14008c0a0(CDialog *param_1)
 
@@ -304,7 +534,12 @@ void FUN_14008c0a0(CDialog *param_1)
 
 
 
-// ----- FUN_1400909e0 @ 1400909e0 -----
+// ===== CProxyCheckerDlg::GetRuntimeClass =====
+// Ghidra: FUN_1400909e0 @ 0x1400909e0
+// MFC RTTI.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 undefined ** FUN_1400909e0(void)
 
@@ -315,7 +550,12 @@ undefined ** FUN_1400909e0(void)
 
 
 
-// ----- FUN_1400909f0 @ 1400909f0 -----
+// ===== CProxyCheckerDlg::CProxyCheckerDlg =====
+// Ghidra: FUN_1400909f0 @ 0x1400909f0
+// Proxy checker dialog ctor.
+// uproxe: Checker integration in uproxe
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x000140090c8b) */
 /* WARNING: Removing unreachable block (ram,0x000140090b2f) */
@@ -456,7 +696,12 @@ LAB_140090ea1:
 
 
 
-// ----- FUN_140090f00 @ 140090f00 -----
+// ===== CProxyCheckerDlg::OnTest =====
+// Ghidra: FUN_140090f00 @ 0x140090f00
+// Run proxy test from UI.
+// uproxe: ValidateChainAsync / ValidateEdgeAsync
+// ------------------------------------------------------------
+
 
 CDialogEx * FUN_140090f00(CDialogEx *param_1,longlong param_2)
 
@@ -680,7 +925,12 @@ LAB_140091575:
 
 
 
-// ----- FUN_140091580 @ 140091580 -----
+// ===== CProxyCheckerDlg::OnTestAll =====
+// Ghidra: FUN_140091580 @ 0x140091580
+// Batch proxy test.
+// uproxe: Pool health probes
+// ------------------------------------------------------------
+
 
 void FUN_140091580(CDialog *param_1,undefined8 param_2,undefined8 param_3,undefined8 param_4)
 
@@ -774,7 +1024,12 @@ void FUN_140091580(CDialog *param_1,undefined8 param_2,undefined8 param_3,undefi
 
 
 
-// ----- FUN_140094970 @ 140094970 -----
+// ===== CChainListCtrl::GetRuntimeClass =====
+// Ghidra: FUN_140094970 @ 0x140094970
+// MFC RTTI.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 undefined ** FUN_140094970(void)
 
@@ -785,7 +1040,12 @@ undefined ** FUN_140094970(void)
 
 
 
-// ----- FUN_140094980 @ 140094980 -----
+// ===== CChainListCtrl::CChainListCtrl =====
+// Ghidra: FUN_140094980 @ 0x140094980
+// Chain list view ctor.
+// uproxe: ChainControlForm list
+// ------------------------------------------------------------
+
 
 void FUN_140094980(CDialogEx *param_1,undefined8 param_2)
 
@@ -880,7 +1140,12 @@ void FUN_140094980(CDialogEx *param_1,undefined8 param_2)
 
 
 
-// ----- FUN_140094c80 @ 140094c80 -----
+// ===== CChainListCtrl::Refresh =====
+// Ghidra: FUN_140094c80 @ 0x140094c80
+// Repaint chain list from profile.
+// uproxe: ChainControlForm refresh
+// ------------------------------------------------------------
+
 
 void FUN_140094c80(CDialog *param_1)
 
@@ -932,7 +1197,12 @@ void DoDataExchange(longlong param_1,undefined8 param_2)
 
 
 
-// ----- FUN_14009ab60 @ 14009ab60 -----
+// ===== CProxyListCtrl::GetRuntimeClass =====
+// Ghidra: FUN_14009ab60 @ 0x14009ab60
+// MFC RTTI.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 undefined ** FUN_14009ab60(void)
 
@@ -943,7 +1213,12 @@ undefined ** FUN_14009ab60(void)
 
 
 
-// ----- FUN_14009ab70 @ 14009ab70 -----
+// ===== CProxyListCtrl::CProxyListCtrl =====
+// Ghidra: FUN_14009ab70 @ 0x14009ab70
+// Proxy list view ctor.
+// uproxe: MainForm proxy list
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x00014009acd2) */
 /* WARNING: Removing unreachable block (ram,0x00014009abef) */
@@ -1025,7 +1300,12 @@ LAB_14009ad9f:
 
 
 
-// ----- FUN_14009ae00 @ 14009ae00 -----
+// ===== CProxyListCtrl::Refresh =====
+// Ghidra: FUN_14009ae00 @ 0x14009ae00
+// Repaint proxy list from profile.
+// uproxe: MainForm refresh
+// ------------------------------------------------------------
+
 
 void FUN_14009ae00(CDialog *param_1)
 
@@ -1080,7 +1360,12 @@ void FUN_14009ae00(CDialog *param_1)
 
 
 
-// ----- FUN_14009aff0 @ 14009aff0 -----
+// ===== CChainProxiesCtrl::GetRuntimeClass =====
+// Ghidra: FUN_14009aff0 @ 0x14009aff0
+// MFC RTTI.
+// uproxe: N/A
+// ------------------------------------------------------------
+
 
 undefined ** FUN_14009aff0(void)
 
@@ -1091,7 +1376,12 @@ undefined ** FUN_14009aff0(void)
 
 
 
-// ----- FUN_14009b000 @ 14009b000 -----
+// ===== CChainProxiesCtrl::CChainProxiesCtrl =====
+// Ghidra: FUN_14009b000 @ 0x14009b000
+// Ordered proxy list inside chain editor.
+// uproxe: ChainControlForm hop ordering
+// ------------------------------------------------------------
+
 
 /* WARNING: Removing unreachable block (ram,0x00014009b132) */
 /* WARNING: Removing unreachable block (ram,0x00014009b0cd) */
@@ -1202,7 +1492,12 @@ LAB_14009b2a7:
 
 
 
-// ----- FUN_14009b310 @ 14009b310 -----
+// ===== CChainProxiesCtrl::OnDeleteProxy =====
+// Ghidra: FUN_14009b310 @ 0x14009b310
+// Remove hop from chain in editor.
+// uproxe: ChainControlForm remove hop
+// ------------------------------------------------------------
+
 
 void FUN_14009b310(CDialog *param_1)
 
